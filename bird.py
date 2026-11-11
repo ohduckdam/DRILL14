@@ -58,6 +58,13 @@ class Bird:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAME_COUNT
         self.x += self.dir * FLY_SPEED_PPS * game_framework.frame_time
 
+        # 화면 가장자리에 닿으면 방향을 바꾸어 좌우로 반복 비행
+        half_w = FRAME_WIDTH / 2
+        if self.x > get_canvas_width() - half_w:
+            self.dir = -1
+        elif self.x < half_w:
+            self.dir = 1
+
     def draw(self):
         index = int(self.frame)
         col = index % FRAME_COLS
