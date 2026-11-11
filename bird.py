@@ -56,12 +56,12 @@ FRAMES_PER_ACTION = FRAME_COUNT            # 날갯짓 1회당 프레임 수
 class Bird:
     image = None  # 모든 새가 공유하는 스프라이트 시트
 
-    def __init__(self):
+    def __init__(self, x=800, y=400, dir=1):
         if Bird.image is None:
             Bird.image = load_image('bird_animation.png')
-        self.x, self.y = 800, 400
+        self.x, self.y = x, y
         self.frame = 0.0
-        self.dir = 1    # 1: 오른쪽, -1: 왼쪽
+        self.dir = dir  # 1: 오른쪽, -1: 왼쪽
 
     def update(self):
         # 컴퓨터 성능(프레임 레이트)과 무관하게 일정한 속도로 날갯짓하도록 frame_time 기반으로 진행
