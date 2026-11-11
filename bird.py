@@ -75,5 +75,8 @@ class Bird:
         # 잘라낸 영역의 중심이 기준점(ROW_BASES[row] + ANCHOR_Y)보다 아래에 있으면
         # 그만큼 화면에서도 아래로 내려 그려야 기준점이 항상 self.y 에 놓인다.
         offset = (top + height / 2) - (ROW_BASES[row] + ANCHOR_Y)
-        Bird.image.clip_draw(col * FRAME_WIDTH, bottom, FRAME_WIDTH, height,
-                             self.x, self.y - offset)
+        # 원본 그림은 오른쪽을 바라보므로, 왼쪽으로 날 때는 좌우 반전('h')하여 그림
+        flip = '' if self.dir == 1 else 'h'
+        Bird.image.clip_composite_draw(col * FRAME_WIDTH, bottom, FRAME_WIDTH, height,
+                                       0, flip, self.x, self.y - offset,
+                                       FRAME_WIDTH, height)
