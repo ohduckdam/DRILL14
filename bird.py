@@ -67,10 +67,16 @@ class Bird:
         self.frame = random.uniform(0, FRAME_COUNT)
         self.dir = dir  # 1: 오른쪽, -1: 왼쪽
 
+        # 새마다 비행 속도를 기준 속도의 ±25% 범위에서 다르게 지정
+        speed_ratio = random.uniform(0.75, 1.25)
+        self.speed_pps = FLY_SPEED_PPS * speed_ratio
+        # 빨리 나는 새는 날갯짓도 빠르게: 날갯짓 빈도를 속도에 비례시킴
+        self.action_per_time = ACTION_PER_TIME * speed_ratio
+
     def update(self):
         # 컴퓨터 성능(프레임 레이트)과 무관하게 일정한 속도로 날갯짓하도록 frame_time 기반으로 진행
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAME_COUNT
-        self.x += self.dir * FLY_SPEED_PPS * game_framework.frame_time
+        self.frame = (self.frame + FRAMES_PER_ACTION * self.action_per_time * game_framework.frame_time) % FRAME_COUNT
+        self.x += self.dir * self.speed_pps * game_framework.frame_time
 
         # 화면 가장자리에 닿으면 방향을 바꾸어 좌우로 반복 비행
         half_w = FRAME_WIDTH * BIRD_SCALE / 2
