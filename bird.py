@@ -29,6 +29,13 @@ ROW_RECTS = [
 ROW_BASES = [0, 168, 340]
 ANCHOR_Y = 85   # 기준선으로부터 화면상의 self.y 에 맞출 지점
 
+# 새 비행 속도 (boy.py 와 같은 단위계: 10 pixel = 30 cm)
+PIXEL_PER_METER = (10.0 / 0.3)
+FLY_SPEED_KMPH = 20.0                                  # 새의 비행 속도 (km/h)
+FLY_SPEED_MPM = (FLY_SPEED_KMPH * 1000.0 / 60.0)       # m/min
+FLY_SPEED_MPS = (FLY_SPEED_MPM / 60.0)                 # m/s
+FLY_SPEED_PPS = (FLY_SPEED_MPS * PIXEL_PER_METER)      # pixel/s
+
 # 날갯짓 애니메이션 속도
 # 14개 프레임이 날갯짓 1회(위 -> 아래 -> 위)를 이룬다.
 TIME_PER_ACTION = 0.7                      # 날갯짓 1회에 걸리는 시간(초)
