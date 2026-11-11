@@ -29,6 +29,12 @@ ROW_RECTS = [
 ROW_BASES = [0, 168, 340]
 ANCHOR_Y = 85   # 기준선으로부터 화면상의 self.y 에 맞출 지점
 
+# 좌우 반전 시 위치 보정
+# 새 몸통 중심은 프레임 칸의 정중앙(91)이 아니라 x = 103 부근에 치우쳐 있다.
+# 반전하면 몸통이 칸 중앙을 기준으로 반대편으로 넘어가 방향 전환 순간 새가 순간이동한다.
+# 따라서 몸통 중심(ANCHOR_X)이 항상 self.x 에 오도록 방향에 따라 그리기 위치를 보정한다.
+ANCHOR_X = 103
+
 # 화면에 그릴 크기 배율
 # 원본 프레임(182px)은 1600px 화면에 10마리를 띄우기에 너무 크므로 축소하여 그린다.
 BIRD_SCALE = 0.5
@@ -82,6 +88,7 @@ class Bird:
         offset = ((top + height / 2) - (ROW_BASES[row] + ANCHOR_Y)) * BIRD_SCALE
         # 원본 그림은 오른쪽을 바라보므로, 왼쪽으로 날 때는 좌우 반전('h')하여 그림
         flip = '' if self.dir == 1 else 'h'
+        offset_x = (ANCHOR_X - FRAME_WIDTH / 2) * BIRD_SCALE * self.dir
         Bird.image.clip_composite_draw(col * FRAME_WIDTH, bottom, FRAME_WIDTH, height,
-                                       0, flip, self.x, self.y - offset,
+                                       0, flip, self.x - offset_x, self.y - offset,
                                        FRAME_WIDTH * BIRD_SCALE, height * BIRD_SCALE)
