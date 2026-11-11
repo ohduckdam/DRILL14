@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 
 import game_framework
@@ -60,7 +62,9 @@ class Bird:
         if Bird.image is None:
             Bird.image = load_image('bird_animation.png')
         self.x, self.y = x, y
-        self.frame = 0.0
+        # 모든 새가 같은 프레임에서 시작하면 10마리가 똑같이 날갯짓하여 부자연스러움
+        # -> 시작 프레임을 무작위로 정해 날갯짓 타이밍을 서로 어긋나게 함
+        self.frame = random.uniform(0, FRAME_COUNT)
         self.dir = dir  # 1: 오른쪽, -1: 왼쪽
 
     def update(self):
