@@ -79,10 +79,15 @@ class Bird:
         self.x += self.dir * self.speed_pps * game_framework.frame_time
 
         # 화면 가장자리에 닿으면 방향을 바꾸어 좌우로 반복 비행
+        # 프레임 시간이 길어(창 드래그 등) 한 번에 경계를 크게 넘어간 경우에도
+        # 경계 안쪽으로 되돌려 놓아 화면 밖에 머무르거나 떨리는 현상을 방지
         half_w = FRAME_WIDTH * BIRD_SCALE / 2
-        if self.x > get_canvas_width() - half_w:
+        right_limit = get_canvas_width() - half_w
+        if self.x > right_limit:
+            self.x = right_limit
             self.dir = -1
         elif self.x < half_w:
+            self.x = half_w
             self.dir = 1
 
     def draw(self):
