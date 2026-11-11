@@ -51,10 +51,12 @@ class Bird:
             Bird.image = load_image('bird_animation.png')
         self.x, self.y = 800, 400
         self.frame = 0.0
+        self.dir = 1    # 1: 오른쪽, -1: 왼쪽
 
     def update(self):
         # 컴퓨터 성능(프레임 레이트)과 무관하게 일정한 속도로 날갯짓하도록 frame_time 기반으로 진행
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAME_COUNT
+        self.x += self.dir * FLY_SPEED_PPS * game_framework.frame_time
 
     def draw(self):
         index = int(self.frame)
