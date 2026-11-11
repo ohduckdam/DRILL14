@@ -6,7 +6,7 @@ import game_framework
 
 # 스프라이트 시트(918 x 506) 구성 정보
 # 5열 x 3행 격자에 총 14개의 프레임이 들어있다. (마지막 행은 4개)
-SHEET_WIDTH, SHEET_HEIGHT = 918, 506
+SHEET_HEIGHT = 506  # (가로 918px)
 FRAME_COLS = 5
 FRAME_COUNT = 14
 FRAME_WIDTH = 182   # 각 프레임의 새 몸통이 정확히 182px 간격으로 배치되어 있음
@@ -30,6 +30,12 @@ ROW_RECTS = [
 # 부드럽게 오르내리는 원래의 몸통 움직임만 남는다.
 ROW_BASES = [0, 168, 340]
 ANCHOR_Y = 85   # 기준선으로부터 화면상의 self.y 에 맞출 지점
+
+# 행별 세로 보정량(원본 픽셀)을 미리 계산해 둔다.
+# 잘라낸 영역의 중심이 기준점(ROW_BASES[row] + ANCHOR_Y)보다 아래에 있으면
+# 그만큼 화면에서도 아래로 내려 그려야 기준점이 항상 self.y 에 놓인다.
+ROW_OFFSETS = [(top + height / 2) - (base + ANCHOR_Y)
+               for (top, height), base in zip(ROW_RECTS, ROW_BASES)]
 
 # 좌우 반전 시 위치 보정
 # 새 몸통 중심은 프레임 칸의 정중앙(91)이 아니라 x = 103 부근에 치우쳐 있다.
@@ -97,10 +103,8 @@ class Bird:
         top, height = ROW_RECTS[row]
         # pico2d 는 이미지 좌표의 원점이 왼쪽 아래이므로 위쪽 기준 top 을 bottom 으로 변환
         bottom = SHEET_HEIGHT - top - height
-        # 잘라낸 영역의 중심이 기준점(ROW_BASES[row] + ANCHOR_Y)보다 아래에 있으면
-        # 그만큼 화면에서도 아래로 내려 그려야 기준점이 항상 self.y 에 놓인다.
-        # 보정량도 원본 픽셀 단위이므로 그리는 배율을 곱해 화면 픽셀로 변환
-        offset = ((top + height / 2) - (ROW_BASES[row] + ANCHOR_Y)) * BIRD_SCALE
+        # 보정량은 원본 픽셀 단위이므로 그리는 배율을 곱해 화면 픽셀로 변환
+        offset = ROW_OFFSETS[row] * BIRD_SCALE
         # 원본 그림은 오른쪽을 바라보므로, 왼쪽으로 날 때는 좌우 반전('h')하여 그림
         flip = '' if self.dir == 1 else 'h'
         offset_x = (ANCHOR_X - FRAME_WIDTH / 2) * BIRD_SCALE * self.dir
