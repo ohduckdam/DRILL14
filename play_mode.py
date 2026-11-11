@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 import game_world
 import game_framework
@@ -35,7 +37,7 @@ def init():
     # 10마리 새떼를 화면 전체에 고르게 퍼뜨려 배치
     for i in range(BIRD_COUNT):
         x = 100 + i * (1400 / (BIRD_COUNT - 1))
-        y = 250 + (i % 5) * 70
+        y = 250 + (i % 5) * 70 + random.randint(-20, 20)  # 줄 맞춘 느낌을 없애기 위한 높이 흔들기
         dir = 1 if i % 2 == 0 else -1
         game_world.add_oject(Bird(x, y, dir))
 
