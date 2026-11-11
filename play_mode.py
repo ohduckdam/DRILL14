@@ -35,6 +35,7 @@ def init():
     game_world.add_oject(grass, 0)
 
     # 10마리 새떼를 화면 전체에 고르게 퍼뜨려 배치
+    # 새들은 땅(잔디, y < 60)과 소년(y = 90) 위쪽 하늘에서만 날도록 y >= 230 으로 제한
     for i in range(BIRD_COUNT):
         x = 100 + i * (1400 / (BIRD_COUNT - 1))
         y = 250 + (i % 5) * 70 + random.randint(-20, 20)  # 줄 맞춘 느낌을 없애기 위한 높이 흔들기
