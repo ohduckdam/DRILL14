@@ -6,6 +6,7 @@ from grass import Grass
 from bird import Bird
 
 boy = None
+BIRD_COUNT = 10
 
 
 def handle_events():
@@ -31,8 +32,12 @@ def init():
     grass = Grass()
     game_world.add_oject(grass, 0)
 
-    bird = Bird()
-    game_world.add_oject(bird)
+    # 10마리 새떼를 화면 전체에 고르게 퍼뜨려 배치
+    for i in range(BIRD_COUNT):
+        x = 100 + i * (1400 / (BIRD_COUNT - 1))
+        y = 250 + (i % 5) * 70
+        dir = 1 if i % 2 == 0 else -1
+        game_world.add_oject(Bird(x, y, dir))
 
 
 def pause():
