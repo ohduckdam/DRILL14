@@ -29,6 +29,10 @@ ROW_RECTS = [
 ROW_BASES = [0, 168, 340]
 ANCHOR_Y = 85   # 기준선으로부터 화면상의 self.y 에 맞출 지점
 
+# 화면에 그릴 크기 배율
+# 원본 프레임(182px)은 1600px 화면에 10마리를 띄우기에 너무 크므로 축소하여 그린다.
+BIRD_SCALE = 0.5
+
 # 새 비행 속도 (boy.py 와 같은 단위계: 10 pixel = 30 cm)
 PIXEL_PER_METER = (10.0 / 0.3)
 FLY_SPEED_KMPH = 20.0                                  # 새의 비행 속도 (km/h)
@@ -59,7 +63,7 @@ class Bird:
         self.x += self.dir * FLY_SPEED_PPS * game_framework.frame_time
 
         # 화면 가장자리에 닿으면 방향을 바꾸어 좌우로 반복 비행
-        half_w = FRAME_WIDTH / 2
+        half_w = FRAME_WIDTH * BIRD_SCALE / 2
         if self.x > get_canvas_width() - half_w:
             self.dir = -1
         elif self.x < half_w:
@@ -74,9 +78,10 @@ class Bird:
         bottom = SHEET_HEIGHT - top - height
         # 잘라낸 영역의 중심이 기준점(ROW_BASES[row] + ANCHOR_Y)보다 아래에 있으면
         # 그만큼 화면에서도 아래로 내려 그려야 기준점이 항상 self.y 에 놓인다.
-        offset = (top + height / 2) - (ROW_BASES[row] + ANCHOR_Y)
+        # 보정량도 원본 픽셀 단위이므로 그리는 배율을 곱해 화면 픽셀로 변환
+        offset = ((top + height / 2) - (ROW_BASES[row] + ANCHOR_Y)) * BIRD_SCALE
         # 원본 그림은 오른쪽을 바라보므로, 왼쪽으로 날 때는 좌우 반전('h')하여 그림
         flip = '' if self.dir == 1 else 'h'
         Bird.image.clip_composite_draw(col * FRAME_WIDTH, bottom, FRAME_WIDTH, height,
                                        0, flip, self.x, self.y - offset,
-                                       FRAME_WIDTH, height)
+                                       FRAME_WIDTH * BIRD_SCALE, height * BIRD_SCALE)
