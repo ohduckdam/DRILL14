@@ -20,6 +20,15 @@ ROW_RECTS = [
     (340, 166),
 ]
 
+# 행 간 위치 보정 (프레임이 바뀔 때 새가 위아래로 튀는 현상 방지)
+# 각 프레임의 눈동자(파란 픽셀) 중심 y 좌표(위쪽 기준)를 측정한 결과:
+#   0행: 94 93 91 88 85,  1행: 255 253 254 254 256,  2행: 429 432 433 434
+# 행 간격이 168, 172 로 서로 달라서 단순히 잘라 그리면 행이 바뀌는 순간 새가 튄다.
+# 각 행의 기준선을 0, 168, 340 으로 두면 눈 높이가 94 -> 85 -> 88 -> 94 로
+# 부드럽게 오르내리는 원래의 몸통 움직임만 남는다.
+ROW_BASES = [0, 168, 340]
+ANCHOR_Y = 85   # 기준선으로부터 화면상의 self.y 에 맞출 지점
+
 # 날갯짓 애니메이션 속도
 # 14개 프레임이 날갯짓 1회(위 -> 아래 -> 위)를 이룬다.
 TIME_PER_ACTION = 0.7                      # 날갯짓 1회에 걸리는 시간(초)
@@ -47,5 +56,8 @@ class Bird:
         top, height = ROW_RECTS[row]
         # pico2d 는 이미지 좌표의 원점이 왼쪽 아래이므로 위쪽 기준 top 을 bottom 으로 변환
         bottom = SHEET_HEIGHT - top - height
+        # 잘라낸 영역의 중심이 기준점(ROW_BASES[row] + ANCHOR_Y)보다 아래에 있으면
+        # 그만큼 화면에서도 아래로 내려 그려야 기준점이 항상 self.y 에 놓인다.
+        offset = (top + height / 2) - (ROW_BASES[row] + ANCHOR_Y)
         Bird.image.clip_draw(col * FRAME_WIDTH, bottom, FRAME_WIDTH, height,
-                             self.x, self.y)
+                             self.x, self.y - offset)
